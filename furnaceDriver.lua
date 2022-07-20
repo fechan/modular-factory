@@ -48,4 +48,7 @@ function Furnace:waitForResult (itemName, amount, timeout)
   return true
 end
 
-return {Furnace = Furnace}
+return {
+  Furnace = Furnace,
+  typeName = "minecraft:furnace"
+}

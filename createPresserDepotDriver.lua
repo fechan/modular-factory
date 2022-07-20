@@ -43,5 +43,6 @@ function Furnace:waitForResult (itemName, amount, timeout)
 end
 
 return {
-  CreatePresserDepot = CreatePresserDepot
+  CreatePresserDepot = CreatePresserDepot,
+  typeName = "create:depot"
 }
