@@ -1,6 +1,7 @@
 local furnaceDriver = require("drivers.furnaceDriver")
 local genericChestDriver = require("drivers.genericChestDriver")
 local createPresserDepotDriver = require("drivers.create.createPresserDepotDriver")
+local machineUtils = require("machineUtils")
 
 local myFurnace = nil
 for _, furnace in pairs({peripheral.find(furnaceDriver.typeName)}) do
@@ -8,11 +9,12 @@ for _, furnace in pairs({peripheral.find(furnaceDriver.typeName)}) do
   break
 end
 
-local myStorage = nil
-for _, storage in pairs({peripheral.find("integrateddynamics:multipart_ticking")}) do
-  myStorage = genericChestDriver.GenericChest:new(nil, storage)
-  break
-end
+-- local myStorage = nil
+-- for _, storage in pairs({peripheral.find("integrateddynamics:multipart_ticking")}) do
+--   myStorage = genericChestDriver.GenericChest:new(nil, storage)
+--   break
+-- end
+local myStorage = machineUtils.findFirst(genericChestDriver.GenericChest, "integrateddynamics:multipart_ticking")
 
 local myPresser = nil
 for _, depot in pairs({peripheral.find(createPresserDepotDriver.typeName)}) do
