@@ -1,7 +1,5 @@
 local inventoryUtils = require("inventoryUtils")
 
-DEPOT_INPUT_SLOT = 1
-
 CreatePresserDepot = {}
 
 function CreatePresserDepot:new (o, peripheral)
@@ -14,7 +12,7 @@ function CreatePresserDepot:new (o, peripheral)
 end
 
 function CreatePresserDepot:press (itemName, from, limit)
-  return inventoryUtils.transfer(from, self, itemName, limit, DEPOT_INPUT_SLOT)
+  return inventoryUtils.transfer(from, self, itemName, limit)
 end
 
 function CreatePresserDepot:clear (to)
