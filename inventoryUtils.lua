@@ -4,7 +4,7 @@ local function transfer (from, to, itemName, limit, toSlot)
     local remaining = limit or math.huge
     local totalTransferred = 0
     for fromSlot,item in pairs(from.peripheral.list()) do
-        if (item.itemName == (itemName or item.itemName)) and (remaining) > 0 then
+        if (item.name == (itemName or item.name)) and (remaining) > 0 then
             local transferred
             if remaining == math.huge then
                 transferred = from.peripheral.pushItems(toName, fromSlot, nil, toSlot)
