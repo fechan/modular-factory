@@ -9,7 +9,7 @@ end
 
 local myStorage = nil
 for storage in pairs(peripheral.find("integrateddynamics:multipart_ticking")) do
-  myStorage = genericChestDriver.Chest:new(nil, storage)
+  myStorage = genericChestDriver.GenericChest:new(nil, storage)
   break
 end
 
