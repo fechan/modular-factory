@@ -27,12 +27,13 @@ function CreatePresserDepot:waitForResult (itemName, amount, timeout)
   local done = false
   while not done do
 
+    local resultItemCount = 0
     for slot,item in pairs(self.peripheral.list()) do
-      if (item.name == (itemName or item.name)) and (item.count >= amount) then
-        done = true
-        break
+      if (item.name == (itemName or item.name)) then
+        resultItemCount = resultItemCount + item.count
       end
     end
+    done = resultItemCount >= amount
     
     os.sleep(1)
     timer = timer - 1
