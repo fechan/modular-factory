@@ -3,7 +3,7 @@ local function transfer (from, to, itemName, limit, toSlot)
     local toName = peripheral.getName(to.peripheral)
     local remaining = limit or math.huge
     local totalTransferred = 0
-    for fromSlot,item in from.peripheral.list() do
+    for fromSlot,item in pairs(from.peripheral.list()) do
         if (item.itemName == (itemName or item.itemName)) and (remaining) > 0 then
             local transferred
             if remaining == math.huge then
