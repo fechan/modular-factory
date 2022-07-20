@@ -1,26 +1,11 @@
-local furnaceDriver = require("drivers.furnaceDriver")
-local genericChestDriver = require("drivers.genericChestDriver")
-local createPresserDepotDriver = require("drivers.create.createPresserDepotDriver")
+local furnaced = require("drivers.furnaceDriver")
+local genericchestd = require("drivers.genericChestDriver")
+local presserd = require("drivers.create.createPresserDepotDriver")
 local machineUtils = require("machineUtils")
 
-local myFurnace = nil
-for _, furnace in pairs({peripheral.find(furnaceDriver.typeName)}) do
-  myFurnace = furnaceDriver.Furnace:new(nil, furnace)
-  break
-end
-
--- local myStorage = nil
--- for _, storage in pairs({peripheral.find("integrateddynamics:multipart_ticking")}) do
---   myStorage = genericChestDriver.GenericChest:new(nil, storage)
---   break
--- end
-local myStorage = machineUtils.findFirst(genericChestDriver.GenericChest, "integrateddynamics:multipart_ticking")
-
-local myPresser = nil
-for _, depot in pairs({peripheral.find(createPresserDepotDriver.typeName)}) do
-  myPresser = createPresserDepotDriver.CreatePresserDepot:new(nil, depot)
-  break
-end
+local myFurnace = machineUtils.findFirst(furnaced.Furnace, furnaced.typeName)
+local myStorage = machineUtils.findFirst(genericchestd.GenericChest, "integrateddynamics:multipart_ticking")
+local myPresser = machineUtils.findFirst(presserd.CreatePresserDepot, presserd.typeName)
 
 myPresser:clear(myStorage)
 myPresser:press("minecraft:iron_ingot", myStorage, 2)
