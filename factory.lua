@@ -1,8 +1,9 @@
 local furnaceDriver = require("furnaceDriver")
 local genericChestDriver = require("genericChestDriver")
+local createPresserDepotDriver = require("createPresserDepotDriver")
 
 local myFurnace = nil
-for _, furnace in pairs({peripheral.find("minecraft:furnace")}) do
+for _, furnace in pairs({peripheral.find(furnaceDriver.typeName)}) do
   myFurnace = furnaceDriver.Furnace:new(nil, furnace)
   break
 end
@@ -13,7 +14,18 @@ for _, storage in pairs({peripheral.find("integrateddynamics:multipart_ticking")
   break
 end
 
-myFurnace:refuel("minecraft:charcoal", myStorage)
-myFurnace:smelt("minecraft:cobblestone", myStorage)
-myFurnace:waitForResult()
-myFurnace:getResult(myStorage)
+local myPresser = nil
+for _, depot in pairs({peripheral.find(createPresserDepotDriver.typeName)}) do
+  myPresser = createPresserDepotDriver.GenericChest:new(nil, depot)
+  break
+end
+
+myPresser:clear()
+myPresser:press("minecraft:iron_ingot", myStorage, 2)
+myPresser:waitForResult("create:iron_sheet", 2)
+
+-- myFurnace:clear(myStorage)
+-- myFurnace:refuel("minecraft:charcoal", myStorage)
+-- myFurnace:smelt("minecraft:cobblestone", myStorage)
+-- myFurnace:waitForResult()
+-- myFurnace:getResult(myStorage)
