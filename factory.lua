@@ -20,7 +20,7 @@ for _, depot in pairs({peripheral.find(createPresserDepotDriver.typeName)}) do
   break
 end
 
-myPresser:clear()
+myPresser:clear(myStorage)
 myPresser:press("minecraft:iron_ingot", myStorage, 2)
 myPresser:waitForResult("create:iron_sheet", 2)
 
