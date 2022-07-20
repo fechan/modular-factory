@@ -1,6 +1,6 @@
-local furnaceDriver = require("furnaceDriver")
-local genericChestDriver = require("genericChestDriver")
-local createPresserDepotDriver = require("createPresserDepotDriver")
+local furnaceDriver = require("drivers.furnaceDriver")
+local genericChestDriver = require("drivers.genericChestDriver")
+local createPresserDepotDriver = require("drivers.create.createPresserDepotDriver")
 
 local myFurnace = nil
 for _, furnace in pairs({peripheral.find(furnaceDriver.typeName)}) do
