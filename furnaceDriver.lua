@@ -24,13 +24,11 @@ function Furnace:smelt (itemName, from, limit)
 end
 
 function Furnace:getResult (to)
-  return inventoryUtils.transfer(self, to)
+  return inventoryUtils.transferFromSlot(self, to, FURNACE_RESULT_SLOT)
 end
 
 function Furnace:clear (to)
-  local transferred = 0
-  transferred = transferred + inventoryUtils.transfer(self, to)
-  return transferred
+  return inventoryUtils.transfer(self, to)
 end
 
 -- optional: everything
