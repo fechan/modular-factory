@@ -1,10 +1,10 @@
 local inventoryUtils = require("inventoryUtils")
 
-FURNACE_TOP_SLOT = 1
-FURNACE_FUEL_SLOT = 2
-FURNACE_RESULT_SLOT = 3
-
-Furnace = {}
+Furnace = {
+  top_slot = 1,
+  fuel_slot = 2,
+  result_slot = 3
+}
 
 function Furnace:new (o, peripheral)
   o = o or {}
@@ -16,15 +16,15 @@ function Furnace:new (o, peripheral)
 end
 
 function Furnace:refuel (itemName, from, limit)
-  return inventoryUtils.transfer(from, self, itemName, limit, FURNACE_FUEL_SLOT)
+  return inventoryUtils.transfer(from, self, itemName, limit, self.fuel_slot)
 end
 
 function Furnace:smelt (itemName, from, limit)
-  return inventoryUtils.transfer(from, self, itemName, limit, FURNACE_TOP_SLOT)
+  return inventoryUtils.transfer(from, self, itemName, limit, self.top_slot)
 end
 
 function Furnace:getResult (to)
-  return inventoryUtils.transferFromSlot(self, to, FURNACE_RESULT_SLOT)
+  return inventoryUtils.transferFromSlot(self, to, self.result_slot)
 end
 
 function Furnace:clear (to)
@@ -37,7 +37,7 @@ function Furnace:waitForResult (itemName, amount, timeout)
   local timer = timeout or math.huge
   local done = false
   while not done do
-    local result = self.peripheral.getItemDetail(FURNACE_RESULT_SLOT)
+    local result = self.peripheral.getItemDetail(self.result_slot)
     done = (result ~= nil) and (result.name == (itemName or result.name)) and (result.count >= amount)
     os.sleep(1)
     timer = timer - 1
