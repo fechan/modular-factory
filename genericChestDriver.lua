@@ -9,4 +9,4 @@ self.peripheral = peripheral
 return o
 end
 
-return GenericChest
+return {GenericChest = GenericChest}
