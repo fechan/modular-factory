@@ -16,7 +16,7 @@ end
 
 local myPresser = nil
 for _, depot in pairs({peripheral.find(createPresserDepotDriver.typeName)}) do
-  myPresser = createPresserDepotDriver.GenericChest:new(nil, depot)
+  myPresser = createPresserDepotDriver.CreatePresserDepot:new(nil, depot)
   break
 end
 
