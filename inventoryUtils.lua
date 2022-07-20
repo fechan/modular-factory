@@ -19,7 +19,7 @@ local function transfer (from, to, itemName, limit, toSlot)
 end
 
 -- optional: limit (inf)
-local function transferFromSlot (from, to, limit, fromSlot)
+local function transferFromSlot (from, to, fromSlot, limit)
     local toName = peripheral.getName(to.peripheral)
     return from.peripheral.pushItems(toName, fromSlot, limit)
 end
