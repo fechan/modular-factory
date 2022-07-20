@@ -40,7 +40,7 @@ function Furnace:waitForResult (itemName, amount, timeout)
   local done = false
   while not done do
     local result = self.peripheral.getItemDetail(FURNACE_RESULT_SLOT)
-    done = (next(result) ~= nil) and (result.name == (itemName or result.name)) and (result.count >= amount)
+    done = (result ~= nil) and (result.name == (itemName or result.name)) and (result.count >= amount)
     os.sleep(1)
     timer = timer - 1
     if timer == 0 then
