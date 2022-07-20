@@ -21,7 +21,7 @@ function CreatePresserDepot:clear (to)
   return inventoryUtils.transfer(self, to)
 end
 
-function Furnace:waitForResult (itemName, amount, timeout)
+function CreatePresserDepot:waitForResult (itemName, amount, timeout)
   amount = amount or 1
   local timer = timeout or math.huge
   local done = false
