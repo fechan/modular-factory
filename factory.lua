@@ -98,6 +98,7 @@ end
 function Factory:getReadyMachine(machineType)
   for i,machine in ipairs(self.machines[machineType]) do
     if machine.ready then
+      machine.ready = false
       return machine
     end
   end
