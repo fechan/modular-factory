@@ -5,15 +5,13 @@ local factory = require("factory")
 local furnace = require("drivers.furnace")
 local chest = require("drivers.chest")
 
-local myFurnace, myFurnace2 = peripheral.find(furnace.Furnace.defaultPeripheralType)
 local myStorage = machineUtils.findFirst(chest.Chest)
 local myFactory = factory.Factory:new(myStorage)
 
-local furnace1 = furnace.Furnace:new(myFurnace)
-local furnace2 = furnace.Furnace:new(myFurnace2)
-
-myFactory:addMachine(furnace1)
-myFactory:addMachine(furnace2)
+for i,furnacePeriph in ipairs({peripheral.find(furnace.Furnace.defaultPeripheralType)}) do
+  local myFurnace = furnace.Furnace:new(furnacePeriph)
+  myFactory:addMachine(myFurnace)
+end
 
 myFactory:scheduleJob(
   "furnace", {
