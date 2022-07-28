@@ -24,7 +24,18 @@ local function transferFromSlot (from, to, fromSlot, limit)
   return from.peripheral.pushItems(toName, fromSlot, limit)
 end
 
+local function numItemsInInventory(inventory, itemName)
+  local count = 0
+  for slot,item in pairs(inventory.peripheral.list()) do
+    if item.name == itemName then
+      count = count + item.count
+    end
+  end
+  return count
+end
+
 return {
   transfer = transfer,
-  transferFromSlot = transferFromSlot
+  transferFromSlot = transferFromSlot,
+  numItemsInInventory = numItemsInInventory
 }
