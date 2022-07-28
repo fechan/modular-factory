@@ -9,10 +9,6 @@ function Factory:new (storage, machines)
   }
   setmetatable(o, self)
   self.__index = self
-
-  self.storage = storage
-  self.machines = machines or {}
-
   return o
 end
 
