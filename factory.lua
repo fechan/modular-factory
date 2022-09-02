@@ -1,6 +1,8 @@
 local inventoryUtils = require("utils.inventory")
 
-local Factory = {}
+local Factory = {
+  machines = {}
+}
 
 function Factory:new (storage, machines)
   local o = {
