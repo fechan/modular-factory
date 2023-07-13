@@ -13,12 +13,21 @@ for i,furnacePeriph in ipairs({peripheral.find(furnace.Furnace.defaultPeripheral
   myFactory:addMachine(myFurnace)
 end
 
-myFactory:scheduleJob(
-  "furnace", {
-    top = {"minecraft:cobblestone", 129},
-    fuel = {"minecraft:charcoal", 1000}
+myFactory:scheduleJob({
+  {
+    "furnace",
+    {
+      top = {"minecraft:cobblestone", 2},
+      fuel = {"minecraft:charcoal", 2}
+    },
+  },
+  {
+    "furnace", {
+      top = {"minecraft:stone", 2},
+      fuel = {"minecraft:charcoal", 2}
+    }
   }
-)
+})
 
 -- myFurnace:smelt({
 --     top = {"minecraft:cobblestone", 2},

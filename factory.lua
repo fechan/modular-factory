@@ -21,7 +21,21 @@ function Factory:addMachine (machine)
   table.insert(self.machines[machine.type], machine)
 end
 
-function Factory:scheduleJob (machineType, machineInputs, machineOptions)
+-- each job: machineType, machineInputs, machineOptions
+function Factory:scheduleJob (job)
+  local tasks = {}
+
+  for _, order in ipairs(job) do
+    for _, task in ipairs(self:createTasks(order)) do
+      table.insert(tasks, task)
+    end
+  end
+
+  parallel.waitForAll(table.unpack(tasks))
+end
+
+function Factory:createTasks(order)
+  local machineType, machineInputs, machineOptions = table.unpack(order)
   -- determine how many tasks needed to process the input
   -- and the input data/stats for each tasks
   local totalTasks = math.huge
@@ -30,7 +44,7 @@ function Factory:scheduleJob (machineType, machineInputs, machineOptions)
     local itemName = machineInputs[input][1]
     local maxStackSize = math.min(maxInputSize, self:maxItemStackSize(itemName))
 
-    local totalInputSize = math.min(machineInputs[input][2], inventoryUtils.numItemsInInventory(self.storage, itemName))
+    local totalInputSize = machineInputs[input][2]
     local numMaxStacks = math.floor(totalInputSize / maxStackSize) -- number of stacks with the max number of items possible
 
     local remainderStackSize = math.fmod(totalInputSize, maxStackSize)
@@ -69,16 +83,18 @@ function Factory:scheduleJob (machineType, machineInputs, machineOptions)
 
     table.insert(tasks, function () self:runTask(machineType, taskInputs, machineOptions) end)
   end
-  parallel.waitForAll(table.unpack(tasks))
+
+  return tasks
 end
 
 function Factory:runTask (machineType, machineInputs, machineOptions)
   machineOptions = machineOptions or {}
-  -- wait until there's a machine available
+  -- wait until there's a machine available and for the inputs to be in storage
   local machine = self:getReadyMachine(machineType)
-  while machine == nil do
-    machine = self:getReadyMachine(machineType)
+  while machine == nil or not self:itemsAreAvailable(machineInputs) do
     coroutine.yield()
+    print("trying to process", machineInputs.top[1])
+    machine = self:getReadyMachine(machineType)
   end
   -- run the machine's run function
   machine:run(machineInputs, self.storage, machineOptions.timeout)
@@ -101,6 +117,15 @@ function Factory:getReadyMachine(machineType)
     end
   end
   return nil
+end
+
+function Factory:itemsAreAvailable(machineInputs)
+  for slot,itemStack in pairs(machineInputs) do
+    local itemName, requestedItems = table.unpack(itemStack)
+    local availableItems = inventoryUtils.numItemsInInventory(self.storage, itemName)
+    if availableItems < requestedItems then return false end
+  end
+  return true
 end
 
 return { Factory = Factory }
