@@ -5,21 +5,21 @@ local Furnace = {
   type = "furnace",
   defaultPeripheralType = "minecraft:furnace",
   ready = true,
-  top_slot = 1,
-  fuel_slot = 2,
-  result_slot = 3,
+  slots = {
+    top = 1,
+    fuel = 2,
+    result = 3
+  },
   maxInputSizes = {
     top = 64,
     fuel = 64
   }
 }
 
-function Furnace:new (periph, top_slot, fuel_slot, result_slot)
+function Furnace:new (periph, slots)
   local o = {
     peripheral = periph,
-    top_slot = top_slot,
-    fuel_slot = fuel_slot,
-    result_slot = result_slot
+    slots = slots
   }
   setmetatable(o, self)
   self.__index = self
@@ -45,15 +45,15 @@ function Furnace:run (inputs, storage, timeout)
 end
 
 function Furnace:emplaceTop (itemName, from, limit)
-  return inventoryUtils.transfer(from, self, itemName, limit, self.top_slot)
+  return inventoryUtils.transfer(from, self, itemName, limit, self.slots.top)
 end
 
 function Furnace:refuel (itemName, from, limit)
-  return inventoryUtils.transfer(from, self, itemName, limit, self.fuel_slot)
+  return inventoryUtils.transfer(from, self, itemName, limit, self.slots.fuel)
 end
 
 function Furnace:getResult (to)
-  return inventoryUtils.transferFromSlot(self, to, self.result_slot)
+  return inventoryUtils.transferFromSlot(self, to, self.slots.result)
 end
 
 function Furnace:clearInto (to)
@@ -61,7 +61,7 @@ function Furnace:clearInto (to)
 end
 
 function Furnace:isDone ()
-  return self.peripheral.getItemDetail(self.top_slot) == nil
+  return self.peripheral.getItemDetail(self.slots.top) == nil
 end
 
 return { Furnace = Furnace }
