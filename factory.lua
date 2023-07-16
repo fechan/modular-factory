@@ -93,11 +93,10 @@ function Factory:runTask (machineType, machineInputs, machineOptions)
   local machine = self:getReadyMachine(machineType)
   while machine == nil or not self:itemsAreAvailable(machineInputs) do
     coroutine.yield()
-    print("trying to process", machineInputs.top[1])
     machine = self:getReadyMachine(machineType)
   end
   -- run the machine's run function
-  machine:run(machineInputs, self.storage, machineOptions.timeout)
+  machine:run(machineInputs, self.storage, machineOptions)
 end
 
 -- we need to actually have an item in storage to see it's max stack size

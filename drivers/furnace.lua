@@ -31,14 +31,14 @@ end
 ---@param inputs.top table Array containing {string name of item to smelt, number of item}
 ---@param inputs.fuel  table Array containing {string name of fuel item, number of item}
 ---@param storage table Machine used as storage
----@param timeout number Time in milliseconds to wait before timing out
----@return boolean false if timed out
-function Furnace:run (inputs, storage, timeout)
+---@param options.timeout number Time in milliseconds to wait before timing out
+---@return boolean false if timed out, true otherwise
+function Furnace:run (inputs, storage, options)
   self.ready = false
   self:clearInto(storage)
   self:emplaceTop(inputs.top[1], storage, inputs.top[2])
   self:refuel(inputs.fuel[1], storage, inputs.fuel[2])
-  local status = machineUtils.waitUntilDone(self, timeout)
+  local status = machineUtils.waitUntilDone(self, options.timeout)
   self:clearInto(storage)
   self.ready = true
   return status
