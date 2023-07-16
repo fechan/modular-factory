@@ -25,8 +25,8 @@ end
 function Factory:scheduleJob (job)
   local tasks = {}
 
-  for _, order in ipairs(job) do
-    for _, task in ipairs(self:createTasks(order)) do
+  for _,order in ipairs(job) do
+    for _,task in ipairs(self:createTasks(order)) do
       table.insert(tasks, task)
     end
   end
@@ -40,7 +40,7 @@ function Factory:createTasks(order)
   -- and the input data/stats for each tasks
   local totalTasks = math.huge
   local inputStats = {}
-  for input, maxInputSize in pairs(self.machines[machineType][1].maxInputSizes) do
+  for input,maxInputSize in pairs(self.machines[machineType][1].maxInputSizes) do
     local itemName = machineInputs[input][1]
     local maxStackSize = math.min(maxInputSize, self:maxItemStackSize(itemName))
 
@@ -100,7 +100,7 @@ function Factory:runTask (machineType, machineInputs, machineOptions)
 end
 
 -- we need to actually have an item in storage to see it's max stack size
-function Factory:maxItemStackSize(itemName)
+function Factory:maxItemStackSize (itemName)
   for slot,item in pairs(self.storage.peripheral.list()) do
     if item.name == itemName then
       return self.storage.peripheral.getItemDetail(slot).maxCount
@@ -108,7 +108,7 @@ function Factory:maxItemStackSize(itemName)
   end
 end
 
-function Factory:getReadyMachine(machineType)
+function Factory:getReadyMachine (machineType)
   for i,machine in ipairs(self.machines[machineType]) do
     if machine.ready then
       machine.ready = false
@@ -118,7 +118,7 @@ function Factory:getReadyMachine(machineType)
   return nil
 end
 
-function Factory:itemsAreAvailable(machineInputs)
+function Factory:itemsAreAvailable (machineInputs)
   for slot,itemStack in pairs(machineInputs) do
     local itemName, requestedItems = table.unpack(itemStack)
     local availableItems = inventoryUtils.numItemsInInventory(self.storage, itemName)
