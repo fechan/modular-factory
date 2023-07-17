@@ -1,28 +1,31 @@
+local Inventory = require("inventory")
 local inventoryUtils = require("utils.inventory")
 local machineUtils = require("utils.machine")
 
 local Furnace = {
   type = "furnace",
-  defaultPeripheralType = "minecraft:furnace",
   ready = true,
-  slots = {
+  defaultPeripheralType = "minecraft:furnace",
+  realSlotNums = {
     top = 1,
     fuel = 2,
     result = 3
   },
-  maxInputSizes = {
-    top = 64,
-    fuel = 64
-  }
+  inputNames = {"top", "fuel"},
+  inventory = nil
 }
+Furnace.__index = Furnace
 
 function Furnace:new (periph, slots)
   local o = {
     peripheral = periph,
-    slots = slots
+    inventory = Inventory.Inventory:new(self.inputNames, {
+      top = {periph, self.realSlotNums.top},
+      fuel = {periph, self.realSlotNums.fuel},
+      result = {periph, self.realSlotNums.result}
+    })
   }
   setmetatable(o, self)
-  self.__index = self
 
   return o
 end
@@ -45,15 +48,15 @@ function Furnace:run (inputs, storage, options)
 end
 
 function Furnace:emplaceTop (itemName, from, limit)
-  return inventoryUtils.transfer(from, self, itemName, limit, self.slots.top)
+  return inventoryUtils.transfer(from, self, itemName, limit, "top")
 end
 
 function Furnace:refuel (itemName, from, limit)
-  return inventoryUtils.transfer(from, self, itemName, limit, self.slots.fuel)
+  return inventoryUtils.transfer(from, self, itemName, limit, "fuel")
 end
 
 function Furnace:getResult (to)
-  return inventoryUtils.transferFromSlot(self, to, self.slots.result)
+  return inventoryUtils.transferFromSlot(self, to, "result")
 end
 
 function Furnace:clearInto (to)
@@ -61,7 +64,7 @@ function Furnace:clearInto (to)
 end
 
 function Furnace:isDone ()
-  return self.peripheral.getItemDetail(self.slots.top) == nil
+  return self.inventory:getItemDetail("top") == nil
 end
 
 return { Furnace = Furnace }

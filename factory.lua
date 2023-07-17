@@ -40,7 +40,7 @@ function Factory:createTasks(order)
   -- and the input data/stats for each tasks
   local totalTasks = math.huge
   local inputStats = {}
-  for input,maxInputSize in pairs(self.machines[machineType][1].maxInputSizes) do
+  for input,maxInputSize in pairs(self.machines[machineType][1].inventory.maxInputSizes) do
     local itemName = machineInputs[input][1]
     local maxStackSize = math.min(maxInputSize, self:maxItemStackSize(itemName))
 
@@ -101,9 +101,9 @@ end
 
 -- we need to actually have an item in storage to see it's max stack size
 function Factory:maxItemStackSize (itemName)
-  for slot,item in pairs(self.storage.peripheral.list()) do
+  for slot,item in pairs(self.storage.inventory:list()) do
     if item.name == itemName then
-      return self.storage.peripheral.getItemDetail(slot).maxCount
+      return self.storage.inventory:getItemDetail(slot).maxCount
     end
   end
 end
