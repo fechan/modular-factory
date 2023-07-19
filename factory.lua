@@ -34,7 +34,7 @@ function Factory:scheduleJob (job)
   parallel.waitForAll(table.unpack(tasks))
 end
 
-function Factory:createTasks(order)
+function Factory:createTasks (order)
   local machineType, machineInputs, machineOptions = table.unpack(order)
   -- determine how many tasks needed to process the input
   -- and the input data/stats for each tasks

@@ -22,7 +22,7 @@ local function transferFromSlot (from, to, fromSlot, limit)
   return from.inventory:pushItems(to.inventory, fromSlot, limit)
 end
 
-local function numItemsInInventory(machine, itemName)
+local function numItemsInInventory (machine, itemName)
   local count = 0
   for slot,item in pairs(machine.inventory:list()) do
     if item.name == itemName then

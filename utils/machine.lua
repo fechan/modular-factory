@@ -1,4 +1,4 @@
-local function findFirst(driver, type)
+local function findFirst (driver, type)
   type = (type or driver.defaultPeripheralType)
   local first = peripheral.find(type)
   return driver:new(first)
