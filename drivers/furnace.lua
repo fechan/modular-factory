@@ -17,13 +17,14 @@ local Furnace = {
 Furnace.__index = Furnace
 
 function Furnace:new (periph, slots)
+  local defaultSlots = {
+    top = {periph, self.realSlotNums.top},
+    fuel = {periph, self.realSlotNums.fuel},
+    result = {periph, self.realSlotNums.result}
+  }
+
   local o = {
-    peripheral = periph,
-    inventory = Inventory.Inventory:new(self.inputNames, {
-      top = {periph, self.realSlotNums.top},
-      fuel = {periph, self.realSlotNums.fuel},
-      result = {periph, self.realSlotNums.result}
-    })
+    inventory = Inventory.Inventory:new(self.inputNames, slots or defaultSlots)
   }
   setmetatable(o, self)
 
