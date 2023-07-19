@@ -91,9 +91,18 @@ function Factory:runTask (machineType, machineInputs, machineOptions)
   machineOptions = machineOptions or {}
   -- wait until there's a machine available and for the inputs to be in storage
   local machine = self:getReadyMachine(machineType)
-  while machine == nil or not self:itemsAreAvailable(machineInputs) do
+  local itemsAreAvailable = self:itemsAreAvailable(machineInputs)
+  while machine == nil or not itemsAreAvailable do
+    -- need to release mutex on the machine if this task doesn't have the crafting incredients
+    -- so that other tasks can use it if they're good to go
+    if machine then
+      machine.ready = true
+    end
+
     coroutine.yield()
+
     machine = self:getReadyMachine(machineType)
+    itemsAreAvailable = self:itemsAreAvailable(machineInputs)
   end
   -- run the machine's run function
   machine:run(machineInputs, self.storage, machineOptions)
@@ -108,6 +117,11 @@ function Factory:maxItemStackSize (itemName)
   end
 end
 
+---Get the first ready machine of the given type
+---On success, the machine ready state is set to false in order to reserve it for
+---the task that requested it
+---@param machineType string Type of machine to get
+---@return table? machine Matching machine if any are ready, otherwise nil
 function Factory:getReadyMachine (machineType)
   for i,machine in ipairs(self.machines[machineType]) do
     if machine.ready then
@@ -122,7 +136,9 @@ function Factory:itemsAreAvailable (machineInputs)
   for slot,itemStack in pairs(machineInputs) do
     local itemName, requestedItems = table.unpack(itemStack)
     local availableItems = inventoryUtils.numItemsInInventory(self.storage, itemName)
-    if availableItems < requestedItems then return false end
+    if availableItems < requestedItems then
+      return false
+    end
   end
   return true
 end
