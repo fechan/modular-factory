@@ -1,5 +1,4 @@
 local factory = require("factory")
-local machineUtils = require("utils.machine")
 
 local sa = require("drivers.create.sequencedassembly")
 local chest = require("drivers.chest")
