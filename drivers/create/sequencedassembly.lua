@@ -1,6 +1,5 @@
 local inventory = require("inventory")
 local inventoryUtils = require("utils.inventory")
-local machineUtils = require("utils.machine")
 
 local SequencedAssembly = {
   type = "sequencedassembly",
@@ -18,6 +17,16 @@ local SequencedAssembly = {
 }
 SequencedAssembly.__index = SequencedAssembly
 
+---Initialize a new Sequenced Assembly machine from Create using a Deployer, a Depot, and a
+---buffer chest that stores crafting ingredients that will be fed into the deployer.
+---
+---The chest can be anywhere on the network, but the Deployer must be above the Depot
+---(just like if you were to use a Deployer-Depot combo manually)
+---@param deployerPeriph  table   ComputerCraft wrapped peripheral of the deployer
+---@param depotPeriph     table   ComputerCraft wrapper peripheral of the depot
+---@param chestPeriph     table   ComputerCraft wrapper peripheral of the chest
+---@param slots           table?  Table mapping virtual slot names to the corresponding {peripheral, realSlot} pair. Leave nil for default mapping.
+---@return table o SequencedAssembly machine
 function SequencedAssembly:new (deployerPeriph, depotPeriph, chestPeriph, slots)
   local defaultSlots = {
     deployer = {deployerPeriph, self.realSlotNums.deployer},
@@ -43,8 +52,7 @@ function SequencedAssembly:new (deployerPeriph, depotPeriph, chestPeriph, slots)
 end
 
 ---Perform sequenced assmebly using items in storage
----@param inputs.deployer table   An array of items, ordered by when they should be deployed  TODO: fix me
----@param inputs.depot    table   Initial item to put in the depot
+---@param inputs          table   An array of items to be inserted into the Deployer in order, plus a "depot" key for the item to put in the Depot.
 ---@param storage         table   Machine used as storage
 ---@param options.repeat  number  Number of times to perform the sequence
 ---@return boolean false if there's a problem, true otherwise
