@@ -1,4 +1,4 @@
-local inventory = require("inventory")
+local Inventory = require("inventory")
 local inventoryUtils = require("utils.inventory")
 
 local SequencedAssembly = {
@@ -44,7 +44,7 @@ function SequencedAssembly:new (deployerPeriph, depotPeriph, chestPeriph, slots)
   self.maxInputSizes = maxInputSizes
 
   local o = {
-    inventory = inventory.Inventory:new(inputNames, slots or defaultSlots, maxInputSizes)
+    inventory = Inventory:new(inputNames, slots or defaultSlots, maxInputSizes)
   }
   setmetatable(o, self)
 

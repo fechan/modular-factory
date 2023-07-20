@@ -13,7 +13,7 @@ function Chest:new (periph)
 
   local o = {
     peripheral = periph,
-    inventory = Inventory.Inventory:new(inputNames, slots)
+    inventory = Inventory:new(inputNames, slots)
   }
   setmetatable(o, self)
 

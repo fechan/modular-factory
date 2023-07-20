@@ -24,7 +24,7 @@ function Furnace:new (periph, slots)
   }
 
   local o = {
-    inventory = Inventory.Inventory:new(self.inputNames, slots or defaultSlots)
+    inventory = Inventory:new(self.inputNames, slots or defaultSlots)
   }
   setmetatable(o, self)
 

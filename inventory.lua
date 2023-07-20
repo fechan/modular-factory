@@ -97,4 +97,4 @@ function Inventory:pullItems(fromMachine, fromSlot, limit, toSlot)
   return fromMachine:pushItems(self, fromSlot, limit, toSlot)
 end
 
-return { Inventory = Inventory }
+return Inventory
