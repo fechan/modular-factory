@@ -1,4 +1,4 @@
-local factory = require("factory")
+local Factory = require("factory")
 
 local SequencedAssembly = require("drivers.create.sequencedassembly")
 local Chest = require("drivers.chest")
