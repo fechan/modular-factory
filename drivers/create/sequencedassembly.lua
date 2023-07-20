@@ -51,7 +51,10 @@ function SequencedAssembly:new (deployerPeriph, depotPeriph, chestPeriph, slots)
   return o
 end
 
----Perform sequenced assmebly using items in storage
+---Perform sequenced assembly using items in storage
+---
+---The number of repetitions of the sequence required is inferred from the size of the first item stack.
+---The number of inputs declared must be enough for the entire sequence.
 ---@param inputs          table   An array of items to be inserted into the Deployer in order, plus a "depot" key for the item to put in the Depot.
 ---@param storage         table   Machine used as storage
 ---@return boolean false if there's a problem, true otherwise
