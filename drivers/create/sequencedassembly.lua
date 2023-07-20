@@ -37,7 +37,7 @@ function SequencedAssembly:new (deployerPeriph, depotPeriph, chestPeriph, slots)
   local maxInputSizes = {depot = self.maxInputSizes["depot"]}
   for chestSlot,mapping in pairs(chestSlots) do
     defaultSlots[chestSlot] = mapping
-    maxInputSizes[chestSlot] = 1
+    maxInputSizes[chestSlot] = 64
     table.insert(inputNames, chestSlot)
   end
   self.inputNames = inputNames
@@ -54,7 +54,6 @@ end
 ---Perform sequenced assmebly using items in storage
 ---@param inputs          table   An array of items to be inserted into the Deployer in order, plus a "depot" key for the item to put in the Depot.
 ---@param storage         table   Machine used as storage
----@param options.repeat  number  Number of times to perform the sequence
 ---@return boolean false if there's a problem, true otherwise
 function SequencedAssembly:run (inputs, storage, options)
   self.ready = false
@@ -62,21 +61,17 @@ function SequencedAssembly:run (inputs, storage, options)
 
   local depotItemName, depotItemCount = table.unpack(inputs.depot)
   self:emplaceDepot(depotItemName, storage)
-  -- prep items in buffer chest
-  local highestSlot = 1
-  local repetitions = options["repeat"] or 1
-  for i=1,repetitions do
-    for destinationSlot,item in ipairs(inputs) do -- this only enumerates items bound for the buffer chest!!!
-      local itemName, itemCount = table.unpack(item)
-      inventoryUtils.transfer(storage, self, itemName, 1, destinationSlot)
-      highestSlot = destinationSlot
 
-      print("Moving item", itemName, "from storage to SA slot", destinationSlot)
-    end
+  -- prep deployer items in buffer chest
+  local highestSlot = 1
+  local repetitions = inputs[1][2] -- infer the number of repetitions from the size of the first item stack bound for the deployer
+  for destinationSlot,item in ipairs(inputs) do -- this only enumerates items bound for the buffer chest!!!
+    local itemName, itemCount = table.unpack(item)
+    inventoryUtils.transfer(storage, self, itemName, itemCount, destinationSlot)
+    highestSlot = destinationSlot
   end
 
   -- start assembly
-  print("Now assembling with", highestSlot, "items to deploy")
   for i=1,repetitions do
     for fromBufferSlot=1,highestSlot do
       self:emplaceDeployer(fromBufferSlot)
@@ -98,7 +93,6 @@ function SequencedAssembly:emplaceDepot (itemName, from)
 end
 
 function SequencedAssembly:emplaceDeployer (fromBufferSlot)
-  print("Putting item from SA slot", fromBufferSlot, "into deployer")
   return self.inventory:pushItems(self, fromBufferSlot, 1, "deployer")
 end
 

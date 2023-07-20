@@ -86,7 +86,6 @@ function Inventory:pushItems(toMachine, fromSlot, limit, toSlot)
   for toSlotName,toSlotInfo in pairs(toMachine.inventory.slots) do
     if toSlot == nil or toSlotName == toSlot then
       local toPeriph, toRealSlot = table.unpack(toSlotInfo)
-      print(peripheral.getName(fromPeriph), fromRealSlot, peripheral.getName(toPeriph), toRealSlot)
       local toName = peripheral.getName(toPeriph)
       transferred = transferred + fromPeriph.pushItems(toName, fromRealSlot, limit, toRealSlot)
     end
