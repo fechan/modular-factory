@@ -112,4 +112,4 @@ function SequencedAssembly:waitForDepotChange ()
   end
 end
 
-return { SequencedAssembly = SequencedAssembly }
+return SequencedAssembly
