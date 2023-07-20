@@ -32,8 +32,25 @@ local function numItemsInInventory (machine, itemName)
   return count
 end
 
+---Generate virtual slot mapping for a chest-like peripheral of any size,
+---as well as an array of all the virtual slots
+---@param periph table ComputerCraft wrapped peripheral of the chest
+---@return table slots      Virtual slot mapping
+---@return table inputNames Array of virtual slot names
+local function generateChestVirtualSlots (periph)
+  local slots = {}
+  local inputNames = {}
+  for i=1,periph.size() do
+    slots[i] = {periph, i}
+    table.insert(inputNames, i)
+  end
+
+  return slots, inputNames
+end
+
 return {
   transfer = transfer,
   transferFromSlot = transferFromSlot,
-  numItemsInInventory = numItemsInInventory
+  numItemsInInventory = numItemsInInventory,
+  generateChestVirtualSlots = generateChestVirtualSlots,
 }

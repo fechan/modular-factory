@@ -1,4 +1,5 @@
 local Inventory = require("inventory")
+local inventoryUtils = require("utils.inventory")
 
 local Chest = {
   type = "chest",
@@ -8,12 +9,7 @@ local Chest = {
 Chest.__index = Chest
 
 function Chest:new (periph)
-  local slots = {}
-  local inputNames = {}
-  for i=1,periph.size() do
-    slots[i] = {periph, i}
-    table.insert(inputNames, i)
-  end
+  local slots, inputNames = inventoryUtils.generateChestVirtualSlots(periph)
 
   local o = {
     peripheral = periph,

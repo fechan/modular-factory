@@ -5,7 +5,7 @@ local factory = require("factory")
 local furnace = require("drivers.furnace")
 local chest = require("drivers.chest")
 
-local myStorage = machineUtils.findFirst(chest.Chest)
+local myStorage = chest.Chest:new(peripheral.wrap("minecraft:chest_0"))
 local myFactory = factory.Factory:new(myStorage)
 
 for i,furnacePeriph in ipairs({peripheral.find(furnace.Furnace.defaultPeripheralType)}) do

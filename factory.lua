@@ -40,11 +40,12 @@ function Factory:createTasks (order)
   -- and the input data/stats for each tasks
   local totalTasks = math.huge
   local inputStats = {}
-  for input,maxInputSize in pairs(self.machines[machineType][1].inventory.maxInputSizes) do
-    local itemName = machineInputs[input][1]
-    local maxStackSize = math.min(maxInputSize, self:maxItemStackSize(itemName))
+  -- for input,maxInputSize in pairs(self.machines[machineType][1].inventory.maxInputSizes) do
+  for input,itemStack in pairs(machineInputs) do
+    local itemName, totalInputSize = table.unpack(itemStack)
+    local maxInputSize = self.machines[machineType][1].inventory.maxInputSizes[input]
 
-    local totalInputSize = machineInputs[input][2]
+    local maxStackSize = math.min(maxInputSize, self:maxItemStackSize(itemName))
     local numMaxStacks = math.floor(totalInputSize / maxStackSize) -- number of stacks with the max number of items possible
 
     local remainderStackSize = math.fmod(totalInputSize, maxStackSize)

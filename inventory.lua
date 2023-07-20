@@ -14,12 +14,14 @@ end
 
 ---This manages peripheral-level inventory management methods
 ---for machines.
----@param slots table Table that maps virtual slot names to {peripheral, realSlotNum}
+---@param inputNames    table   Array of names of input slots (as opposed to result slots)
+---@param slots         table   Table that maps virtual slot names to {peripheral, realSlotNum}
+---@param maxInputSizes table?  Table that maps virtual slot names to their max supported item count
 ---@return table o New instance of Machine
-function Inventory:new (inputNames, slots)
+function Inventory:new (inputNames, slots, maxInputSizes)
   local o = {
     slots = slots,
-    maxInputSizes = getMaxInputSizes(inputNames, slots)
+    maxInputSizes = maxInputSizes or getMaxInputSizes(inputNames, slots)
   }
 
   setmetatable(o, self)
@@ -84,6 +86,7 @@ function Inventory:pushItems(toMachine, fromSlot, limit, toSlot)
   for toSlotName,toSlotInfo in pairs(toMachine.inventory.slots) do
     if toSlot == nil or toSlotName == toSlot then
       local toPeriph, toRealSlot = table.unpack(toSlotInfo)
+      print(peripheral.getName(fromPeriph), fromRealSlot, peripheral.getName(toPeriph), toRealSlot)
       local toName = peripheral.getName(toPeriph)
       transferred = transferred + fromPeriph.pushItems(toName, fromRealSlot, limit, toRealSlot)
     end
