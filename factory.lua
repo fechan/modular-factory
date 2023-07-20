@@ -144,4 +144,4 @@ function Factory:itemsAreAvailable (machineInputs)
   return true
 end
 
-return { Factory = Factory }
+return Factory

@@ -1,12 +1,12 @@
 local factory = require("factory")
 
-local sa = require("drivers.create.sequencedassembly")
-local chest = require("drivers.chest")
+local SequencedAssembly = require("drivers.create.sequencedassembly")
+local Chest = require("drivers.chest")
 
-local myStorage = chest.Chest:new(peripheral.wrap("minecraft:chest_0"))
-local myFactory = factory.Factory:new(myStorage)
+local myStorage = Chest:new(peripheral.wrap("minecraft:chest_0"))
+local myFactory = Factory:new(myStorage)
 
-local mySequencedAssembler = sa.SequencedAssembly:new(
+local mySequencedAssembler = SequencedAssembly:new(
   peripheral.find("create:deployer"),
   peripheral.find("create:depot"),
   peripheral.wrap("minecraft:chest_2")

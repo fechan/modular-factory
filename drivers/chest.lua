@@ -20,4 +20,4 @@ function Chest:new (periph)
   return o
 end
 
-return { Chest = Chest }
+return Chest

@@ -68,4 +68,4 @@ function Furnace:isDone ()
   return self.inventory:getItemDetail("top") == nil
 end
 
-return { Furnace = Furnace }
+return Furnace
