@@ -83,18 +83,31 @@ end
 function Inventory:pushItems(toMachine, fromSlot, limit, toSlot)
   local transferred = 0
   local fromPeriph, fromRealSlot = table.unpack(self.slots[fromSlot])
+  local remaining = limit or fromPeriph.list()[fromRealSlot].count
   for toSlotName,toSlotInfo in pairs(toMachine.inventory.slots) do
     if toSlot == nil or toSlotName == toSlot then
       local toPeriph, toRealSlot = table.unpack(toSlotInfo)
       local toName = peripheral.getName(toPeriph)
-      transferred = transferred + fromPeriph.pushItems(toName, fromRealSlot, limit, toRealSlot)
+      transferred = transferred + fromPeriph.pushItems(toName, fromRealSlot, remaining, toRealSlot)
+      remaining = remaining - transferred
     end
   end
   return transferred
 end
 
 function Inventory:pullItems(fromMachine, fromSlot, limit, toSlot)
-  return fromMachine:pushItems(self, fromSlot, limit, toSlot)
+  local transferred = 0
+  local fromPeriph, fromRealSlot = table.unpack(fromMachine.inventory.slots[fromSlot])
+  local fromName = peripheral.getName(fromPeriph)
+  local remaining = limit or fromPeriph.list()[fromRealSlot].count
+  for toSlotName,toSlotInfo in pairs(self.slots) do
+    if toSlot == nil or toSlotName == toSlot then
+      local toPeriph, toRealSlot = table.unpack(toSlotInfo)
+      transferred = transferred + toPeriph.pullItems(fromName, fromRealSlot, remaining, toRealSlot)
+      remaining = remaining - transferred
+    end
+  end
+  return transferred
 end
 
 return Inventory
