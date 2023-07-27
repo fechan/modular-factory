@@ -17,8 +17,11 @@ local function getMaxInputSizes (inputNames, slots)
   return maxInputSizes
 end
 
----This manages peripheral-level inventory management methods
----for machines.
+---This manages the inventory for machines that do not have their own peripheral-level
+---inventory management methods (e.g. pushItems), but are able to use rednet to report
+---their own inventory state.
+---
+---In other words, this is an Inventory class for CC Turtles.
 ---@param modem         string  Modem name to use for rednet
 ---@param hostname      string  Hostname of client running craftyturtle_client.lua
 ---@param inputNames    table   Array of names of input slots (as opposed to result slots)
