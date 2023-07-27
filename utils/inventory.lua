@@ -9,7 +9,6 @@ local function transfer (from, to, itemName, limit, toSlot)
         transferred = from.inventory:pushItems(to, fromSlot, nil, toSlot)
       else
         transferred = from.inventory:pushItems(to, fromSlot, remaining, toSlot)
-      end
       totalTransferred = totalTransferred + transferred
       remaining = remaining - transferred
     end
