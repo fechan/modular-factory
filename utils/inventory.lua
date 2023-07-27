@@ -4,12 +4,11 @@ local function transfer (from, to, itemName, limit, toSlot)
   local totalTransferred = 0
   for fromSlot,item in pairs(from.inventory:list()) do
     if (item.name == (itemName or item.name)) and (remaining > 0) then
-      local transferred
       local singleTransferLimit = limit
       if remaning == math.huge then
         singleTransferLimit = nil
       end
-      transferred = from.inventory:pushItems(to, fromSlot, singleTransferLimit, toSlot)
+      local transferred = from.inventory:pushItems(to, fromSlot, singleTransferLimit, toSlot)
       totalTransferred = totalTransferred + transferred
       remaining = remaining - transferred
     end
