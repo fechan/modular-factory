@@ -1,4 +1,11 @@
 -- optional: itemName (any), limit (inf), toSlot (any)
+---Transfer items from one machine to another
+---@param from      table     Machine the items are leaving from
+---@param to        table     Machine the items are going to
+---@param itemName  string?   Name of item to transfer (if null, any item type will be transferred)
+---@param limit     integer?  Maximum number of items to move (if null, will transfer as many as possible)
+---@param toSlot    string?   Virtual slot name in destination machine to transfer to (if null, will transfer to first possible slot)
+---@return integer totalTransferred Number of items transferred
 local function transfer (from, to, itemName, limit, toSlot)
   local remaining = limit or math.huge
   local totalTransferred = 0
