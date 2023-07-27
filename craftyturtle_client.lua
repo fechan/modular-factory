@@ -42,9 +42,9 @@ local function listen ()
     if originID == serverID then
       local rpcResponse
       if rpcRequest == "list" then
-        rpcResponse = textutils.serialize(list())
+        rpcResponse = textutils.serialize(table.pack(list()))
       elseif rpcRequest == "craft" then
-        rpcResponse = textutils.serialize(craft())
+        rpcResponse = textutils.serialize(table.pack(craft()))
       end
 
       rednet.send(originID, rpcResponse, PROTOCOL)

@@ -1,4 +1,4 @@
-local Inventory = require("inventory")
+local RemoteInventory = require("remote_inventory")
 local inventoryUtils = require("utils.inventory")
 
 local CraftyTurtle = {
@@ -21,14 +21,14 @@ local CraftyTurtle = {
 }
 CraftyTurtle.__index = CraftyTurtle
 
-function CraftyTurtle:new (periph, slots)
+function CraftyTurtle:new (turtlePeriph, modemPeriph, slots)
   local defaultSlots = {}
-  for virtSlot,realSlot in pairs(realSlotNums) do
-    defaultSlots[virtSlot] = {periph, realSlot}
+  for virtSlot,realSlot in pairs(self.realSlotNums) do
+    defaultSlots[virtSlot] = {turtlePeriph, realSlot}
   end
   
   local o = {
-    inventory = Inventory:new(self.inputNames, slots or defaultSlots)
+    inventory = RemoteInventory:new(modemPeriph, "craftyturtle", self.inputNames, slots or defaultSlots)
   }
   setmetatable(o, self)
 
@@ -46,4 +46,7 @@ function CraftyTurtle:run (inputs, storage, options)
 end
 
 function CraftyTurtle:clearInto (storage)
+  inventoryUtils.transfer(self, storage)
 end
+
+return CraftyTurtle

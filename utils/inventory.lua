@@ -14,7 +14,12 @@ local function transfer (from, to, itemName, limit, toSlot)
       if remaning == math.huge then
         singleTransferLimit = nil
       end
-      local transferred = from.inventory:pushItems(to, fromSlot, singleTransferLimit, toSlot)
+      local transferred
+      if from.inventory.remote then
+        transferred = to.inventory:pullItems(from, fromSlot, singleTransferLimit, toSlot)
+      else
+        transferred = from.inventory:pushItems(to, fromSlot, singleTransferLimit, toSlot)
+      end
       totalTransferred = totalTransferred + transferred
       remaining = remaining - transferred
     end

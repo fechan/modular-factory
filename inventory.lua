@@ -99,7 +99,7 @@ function Inventory:pullItems(fromMachine, fromSlot, limit, toSlot)
   local transferred = 0
   local fromPeriph, fromRealSlot = table.unpack(fromMachine.inventory.slots[fromSlot])
   local fromName = peripheral.getName(fromPeriph)
-  local remaining = limit or fromPeriph.list()[fromRealSlot].count
+  local remaining = limit or fromMachine.inventory:list()[fromSlot].count
   for toSlotName,toSlotInfo in pairs(self.slots) do
     if toSlot == nil or toSlotName == toSlot then
       local toPeriph, toRealSlot = table.unpack(toSlotInfo)
