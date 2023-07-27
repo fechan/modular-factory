@@ -1,5 +1,4 @@
 PROTOCOL = "mf-craftyturtle"
-SERVER_HOSTNAME = "server"
 
 local RemoteInventory = {
   remote = true,
@@ -11,7 +10,6 @@ local RemoteInventory = {
 local function getMaxInputSizes (inputNames, slots)
   local maxInputSizes = {}
   for _,inputName in ipairs(inputNames) do
-    local peripheral, realSlot = table.unpack(slots[inputName])
     maxInputSizes[inputName] = 64
   end
   return maxInputSizes
@@ -22,17 +20,12 @@ end
 ---their own inventory state.
 ---
 ---In other words, this is an Inventory class for CC Turtles.
----@param modem         table   Wrapped modem peripheral to use for rednet
----@param hostname      string  Hostname of client running craftyturtle_client.lua
+---@param clientID      integer ID of client running craftyturtle.lua
 ---@param inputNames    table   Array of names of input slots (as opposed to result slots)
 ---@param slots         table   Table that maps virtual slot names to {peripheral, realSlotNum}
 ---@param maxInputSizes table?  Table that maps virtual slot names to their max supported item count
 ---@return table o New instance of Machine
-function RemoteInventory:new (modem, hostname, inputNames, slots, maxInputSizes)
-  rednet.open(peripheral.getName(modem))
-  local clientID = rednet.lookup(PROTOCOL, hostname)
-  assert(clientID ~= nil, "Failed to connect to remote inventory client with hostname", hostname)
-
+function RemoteInventory:new (clientID, inputNames, slots, maxInputSizes)
   local o = {
     slots = slots,
     maxInputSizes = maxInputSizes or getMaxInputSizes(inputNames, slots),
@@ -41,8 +34,6 @@ function RemoteInventory:new (modem, hostname, inputNames, slots, maxInputSizes)
 
   setmetatable(o, self)
   self.__index = self
-
-  rednet.host(PROTOCOL, SERVER_HOSTNAME)
 
   return o
 end
@@ -53,7 +44,11 @@ end
 ---@return table list List of items in inventory
 function RemoteInventory:list ()
   rednet.send(self.clientID, "list", PROTOCOL)
-  local id, rpcResponse, protocol = rednet.receive(PROTOCOL)
+  local id, rpcResponse, protocol
+  repeat
+    id, rpcResponse, protocol = rednet.receive(PROTOCOL)
+  until id == self.clientID
+
   local list = table.unpack(textutils.unserialize(rpcResponse))
   return list
 end

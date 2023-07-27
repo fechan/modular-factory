@@ -1,6 +1,5 @@
 HOSTNAME = "craftyturtle"
-SERVER_HOSTNAME = "server"
-MODEM = "bottom"
+SERVER_HOSTNAME = "mf-server"
 
 PROTOCOL = "mf-craftyturtle"
 
@@ -19,7 +18,7 @@ REAL_SLOT_NUMS = {
 local function list ()
   local itemList = {}
   for virtSlot,realSlot in pairs(REAL_SLOT_NUMS) do 
-    itemList[virtSlot] = turtle.getItemDetail(realSlot)
+    itemList[virtSlot] = turtle.getItemDetail(realSlot, false)
   end
   return itemList
 end
@@ -30,16 +29,21 @@ local function craft ()
 end
 
 local function listen ()
-  rednet.open(MODEM)
+  peripheral.find("modem", rednet.open)
   rednet.host(PROTOCOL, HOSTNAME)
 
-  local serverID = rednet.lookup(PROTOCOL, SERVER_HOSTNAME)
-  assert(serverID ~= nil, "Couldn't find factory server with hostname", SERVER_HOSTNAME)
+  local serverID
+  repeat
+    serverID = rednet.lookup(PROTOCOL, SERVER_HOSTNAME)
+  until serverID ~= nil
+  print("Server found", serverID)
 
   while 1 do
     local originID, rpcRequest = rednet.receive(PROTOCOL)
     
     if originID == serverID then
+      print("[RECV]", rpcRequest)
+
       local rpcResponse
       if rpcRequest == "list" then
         rpcResponse = textutils.serialize(table.pack(list()))
@@ -48,6 +52,7 @@ local function listen ()
       end
 
       rednet.send(originID, rpcResponse, PROTOCOL)
+      print("[SEND]", rpcResponse)
     end  
   end
 end
