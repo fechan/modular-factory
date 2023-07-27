@@ -2,9 +2,10 @@ PROTOCOL = "mf-craftyturtle"
 SERVER_HOSTNAME = "server"
 
 local RemoteInventory = {
+  remote = true,
   slots = nil,
   maxInputSizes = nil,
-  hostname = nil,
+  clientID = nil,
 }
 
 local function getMaxInputSizes (inputNames, slots)
@@ -18,15 +19,21 @@ end
 
 ---This manages peripheral-level inventory management methods
 ---for machines.
+---@param modem         string  Modem name to use for rednet
+---@param hostname      string  Hostname of client running craftyturtle_client.lua
 ---@param inputNames    table   Array of names of input slots (as opposed to result slots)
 ---@param slots         table   Table that maps virtual slot names to {peripheral, realSlotNum}
 ---@param maxInputSizes table?  Table that maps virtual slot names to their max supported item count
 ---@return table o New instance of Machine
-function RemoteInventory:new (hostname, inputNames, slots, maxInputSizes)
+function RemoteInventory:new (modem, hostname, inputNames, slots, maxInputSizes)
+  rednet.open(modem)
+  local clientID = rednet.lookup(PROTOCOL, hostname)
+  assert(clientID ~= nil, "Failed to connect to remote inventory client with hostname", hostname)
+
   local o = {
     slots = slots,
     maxInputSizes = maxInputSizes or getMaxInputSizes(inputNames, slots),
-    hostname = hostname,
+    clientID = clientID,
   }
 
   setmetatable(o, self)
@@ -42,20 +49,10 @@ end
 ---except the keys are virtual slot names
 ---@return table list List of items in inventory
 function RemoteInventory:list ()
-  rednet.send(self.hostname, "list()")
-  rednet.receive()
+  rednet.send(self.clientID, "list", PROTOCOL)
+  local id, rpcResponse, protocol = rednet.receive(PROTOCOL)
+  local list = table.unpack(textutils.unserialize(rpcResponse))
   return list
-end
-
----Get item details for the given slot
----Identical to [generic_peripheral/inventory.getItemDetail()](https://tweaked.cc/generic_peripheral/inventory.html#v:getItemDetail)
----except it takes a virtual slot name
----@param slot string Slot name
----@return table itemDetail Item details
-function RemoteInventory:getItemDetail (slot)
-  local peripheral, realSlot = table.unpack(self.slots[slot])
-  local item = peripheral.getItemDetail(realSlot)
-  return item
 end
 
 ---Push items to the given machine
@@ -67,20 +64,15 @@ end
 ---@param toSlot    string? Optional destination slot name
 ---@return integer transferred Number of transferred items
 function RemoteInventory:pushItems(toMachine, fromSlot, limit, toSlot)
-  local transferred = 0
-  local fromPeriph, fromRealSlot = table.unpack(self.slots[fromSlot])
-  for toSlotName,toSlotInfo in pairs(toMachine.inventory.slots) do
-    if toSlot == nil or toSlotName == toSlot then
-      local toPeriph, toRealSlot = table.unpack(toSlotInfo)
-      local toName = peripheral.getName(toPeriph)
-      transferred = transferred + fromPeriph.pushItems(toName, fromRealSlot, limit, toRealSlot)
-    end
-  end
-  return transferred
+  assert(toMachine.inventory.remote or false, "Cannot pushItems from a RemoteInventory to another RemoteInventory")
+
+  return toMachine.inventory:pullItems({inventory = self}, fromSlot, limit, toSlot)
 end
 
 function RemoteInventory:pullItems(fromMachine, fromSlot, limit, toSlot)
-  return fromMachine:pushItems(self, fromSlot, limit, toSlot)
+  assert(toMachine.inventory.remote or false, "Cannot pullItems from a RemoteInventory to another RemoteInventory")
+
+  return fromMachine.inventory:pushItems({inventory = self}, fromSlot, limit, toSlot)
 end
 
 return RemoteInventory
