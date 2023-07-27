@@ -1,14 +1,24 @@
--- optional: itemName (any), limit (inf), toSlot (any)
+---Transfer items from one machine to another
+---@param from      table     Machine the items are leaving from
+---@param to        table     Machine the items are going to
+---@param itemName  string?   Name of item to transfer (if null, any item type will be transferred)
+---@param limit     integer?  Maximum number of items to move (if null, will transfer as many as possible)
+---@param toSlot    string?   Virtual slot name in destination machine to transfer to (if null, will transfer to first possible slot)
+---@return integer totalTransferred Number of items transferred
 local function transfer (from, to, itemName, limit, toSlot)
   local remaining = limit or math.huge
   local totalTransferred = 0
   for fromSlot,item in pairs(from.inventory:list()) do
     if (item.name == (itemName or item.name)) and (remaining > 0) then
+      local singleTransferLimit = limit
+      if remaning == math.huge then
+        singleTransferLimit = nil
+      end
       local transferred
-      if remaining == math.huge then
-        transferred = from.inventory:pushItems(to, fromSlot, nil, toSlot)
+      if from.inventory.remote then
+        transferred = to.inventory:pullItems(from, fromSlot, singleTransferLimit, toSlot)
       else
-        transferred = from.inventory:pushItems(to, fromSlot, remaining, toSlot)
+        transferred = from.inventory:pushItems(to, fromSlot, singleTransferLimit, toSlot)
       end
       totalTransferred = totalTransferred + transferred
       remaining = remaining - transferred
