@@ -1,4 +1,3 @@
--- optional: itemName (any), limit (inf), toSlot (any)
 ---Transfer items from one machine to another
 ---@param from      table     Machine the items are leaving from
 ---@param to        table     Machine the items are going to
